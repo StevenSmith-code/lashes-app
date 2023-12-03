@@ -19,7 +19,7 @@ const Maps = () => {
         <GoogleMap
           mapContainerStyle={{ width: "100%", height: "400px" }}
           center={{ lat: 37.29861068725586, lng: -107.8475112915039 }}
-          zoom={16}
+          zoom={17}
         >
           <MarkerF
             position={{ lat: 37.29861068725586, lng: -107.8475112915039 }}
@@ -29,8 +29,8 @@ const Maps = () => {
             zIndex={1}
             options={{ pixelOffset: new google.maps.Size(0, -40) }}
           >
-            <div>
-              <h3>Lashes by Jermane</h3>
+            <div className="space-y-2">
+              <h3 className="font-semibold">Lashes by Jermane</h3>
               <p>1539 Florida rd. #110, Durango, CO</p>
             </div>
           </InfoWindowF>
