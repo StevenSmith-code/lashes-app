@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
+import { isAdmin } from '@/lib/admin';
 import {
   UserButton,
   useUser,
@@ -30,9 +31,16 @@ export function Navbar() {
               <UserButton />
             </div>
           )}
-          <Button size={"sm"} asChild>
-            <Link href={"/sign-up"}>Make an appointment</Link>
-          </Button>
+
+          {isAdmin(user?.id) ? (
+            <Button size={"sm"} asChild>
+              <Link href={"/dashboard"}>Dashboard</Link>
+            </Button>
+          ) : (
+            <Button size={"sm"} asChild>
+              <Link href={"/sign-up"}>Make an appointment</Link>
+            </Button>
+          )}
         </div>
       </div>
     </div>
