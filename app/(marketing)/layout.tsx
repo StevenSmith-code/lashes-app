@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Footer } from './_components/footer';
-import { Navbar } from './_components/navbar';
+import { Footer } from '@/components/footer';
+import { Navbar } from '@/components/navbar';
 
 export default function MarketingLayout({
   children,

@@ -2,6 +2,9 @@ import React from 'react';
 
 import { Toaster } from 'sonner';
 
+import { Footer } from '@/components/footer';
+import { Navbar } from '@/components/navbar';
+
 export default function PlatformLayout({
   children,
 }: {
@@ -10,7 +13,9 @@ export default function PlatformLayout({
   return (
     <>
       <Toaster />
+      <Navbar />
       {children}
+      <Footer />
     </>
   );
 }

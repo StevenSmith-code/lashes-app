@@ -49,7 +49,7 @@ export default function MarketingPage() {
         well as tanning
       </div>
       <Button className="mt-6 mb-40" size={"lg"} asChild>
-        <Link href={"/sign-up"}>Book an appointmnet today</Link>
+        <Link href={"/booking"}>Book an appointmnet today</Link>
       </Button>
       <Maps />
       <Services />

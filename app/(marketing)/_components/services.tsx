@@ -59,6 +59,17 @@ const Services = () => {
       <h1 className="text-3xl md:text-5xl text-center text-neutral-800 mb-4 max-w-4xl">
         Services
       </h1>
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-2 mb-5">
+        {listOfServices.map((service) => (
+          <ServiceCard
+            key={service.name}
+            name={service.name}
+            description={service.description}
+            price={service.price}
+            refillPrice={service.refillPrice}
+          />
+        ))}
+      </div>
       <p
         className={cn(
           " text-sm md:text-xl text-neutral-400 mt-2 max-w-xs md:max-w-2xl text-center w-fit",
@@ -75,17 +86,6 @@ const Services = () => {
         your appointment. To maintain your lashes, use water-based cleansers
         instead of oil-based ones.
       </p>
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-10">
-        {listOfServices.map((service) => (
-          <ServiceCard
-            key={service.name}
-            name={service.name}
-            description={service.description}
-            price={service.price}
-            refillPrice={service.refillPrice}
-          />
-        ))}
-      </div>
     </div>
   );
 };
