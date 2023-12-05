@@ -14,7 +14,7 @@ export default function PlatformLayout({
     <>
       <Toaster />
       <Navbar />
-      {children}
+      <main className=" pt-40 pb-20 bg-slate-100 h-screen">{children}</main>
       <Footer />
     </>
   );
