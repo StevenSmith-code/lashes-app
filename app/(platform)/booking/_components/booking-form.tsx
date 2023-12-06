@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import useBookingStore from '@/hooks/useBookingStore';
 
 import BookingCalendar from './booking-calendar';
 
@@ -21,10 +22,13 @@ const BookingForm = () => {
     string | undefined
   >(undefined);
 
+  const booking = useBookingStore();
+
   const handleTriggerClick = (trigger: string) => {
     setActiveTrigger(trigger);
     setNestedAccordionValue(trigger);
     setIsCollapseable(false);
+    useBookingStore.getState().setServiceName(trigger);
   };
 
   const handleTriggerReset = () => {
@@ -119,10 +123,12 @@ const BookingForm = () => {
                           </div>
                         </AccordionTrigger>
                         <AccordionContent>
-                          <BookingCalendar
-                            name={"Full Set Classic Extensions"}
-                            price={150}
-                          />
+                          <div className="flex items-center justify-between">
+                            <BookingCalendar />
+                            <Button onClick={() => console.log(booking)}>
+                              Select
+                            </Button>
+                          </div>
                         </AccordionContent>
                       </AccordionItem>
                       <AccordionItem value="refill-calendar">
