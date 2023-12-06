@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 
+import BookingCalendar from './booking-calendar';
+
 const BookingForm = () => {
   const [activeItem, setActiveItem] = useState<string>("item-1");
   const [activeTrigger, setActiveTrigger] = useState<string | null>(null);
@@ -85,48 +87,63 @@ const BookingForm = () => {
                     <p className="text-sm text-muted-foreground text-left mb-4">
                       I would like to schedule...
                     </p>
-
-                    {/* make this into an accordion */}
-                    {/* <form action={create} className="space-y-4">
-                      <div className="flex flex-col items-stretch justify-center">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-lg">
-                              Full Set Classic Extensions
-                            </p>
-                            <p className="text-sm text-muted-foreground text-left">
-                              30~40 min. $150
+                    <Accordion type="single" defaultValue={undefined}>
+                      <AccordionItem value="classic-calendar">
+                        <AccordionTrigger>
+                          <div className="flex flex-col items-stretch justify-center">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="text-lg">
+                                  Full Set Classic Extensions
+                                </p>
+                                <p className="text-sm text-muted-foreground text-left">
+                                  30~40 min. $150
+                                </p>
+                              </div>
+                              <input
+                                type="text"
+                                name="classic"
+                                hidden
+                                value={"classic"}
+                                readOnly
+                              />
+                              <Button type="submit">Select</Button>
+                            </div>
+                            <p className="text-sm text-muted-foreground text-left mt-4">
+                              I recommend refills every 2 to 4 weeks depending
+                              on personal maintenance. Don't wait too long to
+                              schedule your refills. You may be charged up to a
+                              full set if more than half of your eyelashes need
+                              extensions.
                             </p>
                           </div>
-                          <input
-                            type="text"
-                            name="classic"
-                            hidden
-                            value={"classic"}
-                            readOnly
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <BookingCalendar
+                            name={"Full Set Classic Extensions"}
+                            price={150}
                           />
-                          <Button type="submit">Select</Button>
-                        </div>
-                        <p className="text-sm text-muted-foreground text-left mt-4">
-                          I recommend refills every 2 to 4 weeks depending on
-                          personal maintenance. Don't wait too long to schedule
-                          your refills. You may be charged up to a full set if
-                          more than half of your eyelashes need extensions.
-                        </p>
-                      </div>
-                      <Separator />
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-lg">Classic Refill</p>
-                          <p className="text-sm text-muted-foreground text-left">
-                            30~40 min. $65
-                          </p>
-                        </div>
-                        <Button id="classic-refill" type="submit">
-                          Select
-                        </Button>
-                      </div>
-                    </form> */}
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="refill-calendar">
+                        <AccordionTrigger>
+                          <div className="flex items-center justify-between w-full">
+                            <div>
+                              <p className="text-lg">Classic Refill</p>
+                              <p className="text-sm text-muted-foreground text-left">
+                                30~40 min. $65
+                              </p>
+                            </div>
+                            <Button id="classic-refill" type="submit">
+                              Select
+                            </Button>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <p>test</p>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
                   </div>
                 </AccordionContent>
               </AccordionItem>
