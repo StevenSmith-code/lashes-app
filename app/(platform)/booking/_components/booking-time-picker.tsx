@@ -12,12 +12,20 @@ import {
 import useBookingStore from '@/hooks/useBookingStore';
 import { cn } from '@/lib/utils';
 
-const BookingTimePicker = () => {
-  const { time, setTime } = useBookingStore((state) => ({
+interface BookingTimePickerProps {
+  onTimeChange: (time: string) => void;
+}
+
+const BookingTimePicker = ({ onTimeChange }: BookingTimePickerProps) => {
+  const { time, setDateTime } = useBookingStore((state) => ({
     time: state.time,
-    setTime: state.setTime,
+    setDateTime: state.setDateTime,
   }));
 
+  const handleTimeChange = (newTime: string) => {
+    setDateTime(undefined, newTime); // Update the time in the store
+    onTimeChange(newTime); // Update the time in the form
+  };
   const generateTimeOptions = () => {
     const options = [];
     for (let hour = 11; hour <= 18; hour++) {
@@ -49,7 +57,10 @@ const BookingTimePicker = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent side="bottom">
         {timeOptions.map((option, index) => (
-          <DropdownMenuItem key={index} onSelect={() => setTime(option)}>
+          <DropdownMenuItem
+            key={index}
+            onSelect={() => handleTimeChange(option)}
+          >
             {option}
           </DropdownMenuItem>
         ))}

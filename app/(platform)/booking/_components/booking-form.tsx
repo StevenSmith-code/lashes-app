@@ -1,6 +1,7 @@
 "use client";
 import { useState } from 'react';
 
+import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import {
   Controller,
@@ -16,14 +17,18 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import useBookingStore from '@/hooks/useBookingStore';
 import { FormDataSchema } from '@/lib/formSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import BookingCalendar from './booking-calendar';
+import BookingTimePicker from './booking-time-picker';
 
 type Inputs = z.infer<typeof FormDataSchema>;
 
 const steps = [
   { id: 1, name: "Service", fields: ["service"] },
-  { id: 2, name: "Date and time" },
+  { id: 2, name: "Date and time", fields: ["dateTime"] },
   { id: 3, name: "Personal" },
   { id: 4, name: "Confirmation" },
 ];
@@ -55,11 +60,12 @@ const services = [
 ];
 
 const BookingForm = () => {
+  const { dateTime } = useBookingStore();
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setformData] = useState({
     service: "",
-    dateTime: "",
+    dateTime,
     contactInfo: "",
   });
   const delta = currentStep - previousStep;
@@ -104,6 +110,20 @@ const BookingForm = () => {
     }
   };
 
+  const convertTo24HourFormat = (time12h: string): string => {
+    const [time, modifier] = time12h.split(" ");
+    let [hours, minutes] = time.split(":");
+
+    if (hours === "12") {
+      hours = "00";
+    }
+
+    if (modifier === "PM" && hours !== "12") {
+      hours = (parseInt(hours, 10) + 12).toString();
+    }
+
+    return `${hours.padStart(2, "0")}:${minutes}:00`;
+  };
   return (
     <section className="flex flex-col justify-between mt-10 ">
       {/* steps */}
@@ -165,12 +185,9 @@ const BookingForm = () => {
                 render={({ field }) => (
                   <Accordion type="single" collapsible>
                     {services.map((service) => (
-                      <AccordionItem
-                        key={service.id}
-                        value={service.id.toString()}
-                      >
+                      <AccordionItem key={service.id} value={service.name}>
                         <AccordionTrigger
-                          onClick={() => field.onChange(service.id.toString())}
+                          onClick={() => field.onChange(service.name)}
                         >
                           {service.name}
                         </AccordionTrigger>
@@ -213,13 +230,45 @@ const BookingForm = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             <h2 className="text-base font-semibold leading-7 text-gray-900">
-              Address
+              Date and time
             </h2>
             <p className="mt-1 text-sm leading-6 text-gray-600">
-              Address where you can receive mail.
+              Pick a date and time that fits best for you.
             </p>
 
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"></div>
+            <div className="mt-10">
+              <Controller
+                name="dateTime"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex items-center justify-center space-x-6">
+                    <BookingCalendar
+                      onDateChange={(date: Date) => {
+                        const formattedDate = format(date, "yyyy-MM-dd");
+                        const timePart = field.value
+                          ? field.value.split("T")[1]
+                          : "00:00:00";
+                        field.onChange(`${formattedDate}T${timePart}`);
+                      }}
+                    />
+                    <BookingTimePicker
+                      onTimeChange={(time12h: string) => {
+                        const time24h = convertTo24HourFormat(time12h);
+                        const datePart = field.value
+                          ? field.value.split("T")[0]
+                          : format(new Date(), "yyyy-MM-dd");
+                        field.onChange(`${datePart}T${time24h}`);
+                      }}
+                    />
+                  </div>
+                )}
+              />
+              {errors.dateTime && (
+                <p className="text-red-500">
+                  Service is {errors.dateTime.message}
+                </p>
+              )}
+            </div>
           </motion.div>
         )}
 

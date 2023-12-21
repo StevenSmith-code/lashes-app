@@ -3,6 +3,7 @@
 import {
   isBefore,
   isMonday,
+  isSameDay,
   isSunday,
   startOfDay,
 } from 'date-fns';
@@ -19,17 +20,31 @@ import {
 import useBookingStore from '@/hooks/useBookingStore';
 import { cn } from '@/lib/utils';
 
-import BookingTimePicker from './booking-time-picker';
+interface BookingCalendarProps {
+  onDateChange: (date: Date) => void;
+}
 
-const BookingCalendar = () => {
-  const { date, setDate } = useBookingStore((state) => ({
-    date: state.date || new Date(),
-    setDate: state.setDate,
+const BookingCalendar = ({ onDateChange }: BookingCalendarProps) => {
+  const { date, setDateTime } = useBookingStore((state) => ({
+    date: state.date,
+    setDateTime: state.setDateTime,
   }));
+
+  const handleDateChange = (newDate: Date | undefined) => {
+    if (newDate) {
+      setDateTime(newDate); // Update the date in the store
+      onDateChange(newDate); // Update the date in the form
+    }
+  };
 
   const disabledDays = (day: Date) => {
     const today = startOfDay(new Date());
-    return isSunday(day) || isMonday(day) || isBefore(day, today);
+    return (
+      isSunday(day) ||
+      isMonday(day) ||
+      isBefore(day, today) ||
+      isSameDay(day, today)
+    );
   };
 
   return (
@@ -54,14 +69,13 @@ const BookingCalendar = () => {
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            selected={date}
-            onSelect={setDate}
+            selected={date ?? undefined}
+            onSelect={handleDateChange}
             initialFocus
             disabled={disabledDays}
           />
         </PopoverContent>
       </Popover>
-      <BookingTimePicker />
     </section>
   );
 };
