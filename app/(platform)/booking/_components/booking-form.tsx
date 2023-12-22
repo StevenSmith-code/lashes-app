@@ -22,6 +22,7 @@ import { FormDataSchema } from '@/lib/formSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import BookingCalendar from './booking-calendar';
+import BookingPersonal from './booking-personal';
 import BookingTimePicker from './booking-time-picker';
 
 type Inputs = z.infer<typeof FormDataSchema>;
@@ -29,7 +30,11 @@ type Inputs = z.infer<typeof FormDataSchema>;
 const steps = [
   { id: 1, name: "Service", fields: ["service"] },
   { id: 2, name: "Date and time", fields: ["dateTime"] },
-  { id: 3, name: "Personal" },
+  {
+    id: 3,
+    name: "Personal",
+    fields: ["firstName", "lastName", "email", "phoneNumber"],
+  },
   { id: 4, name: "Confirmation" },
 ];
 const services = [
@@ -66,8 +71,19 @@ const BookingForm = () => {
   const [formData, setformData] = useState({
     service: "",
     dateTime,
-    contactInfo: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
   });
+
+  const updateFormData = (fieldName: keyof Inputs, value: string) => {
+    setformData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: value,
+    }));
+  };
+
   const delta = currentStep - previousStep;
 
   const {
@@ -265,7 +281,7 @@ const BookingForm = () => {
               />
               {errors.dateTime && (
                 <p className="text-red-500">
-                  Service is {errors.dateTime.message}
+                  Date and Time is {errors.dateTime.message}
                 </p>
               )}
             </div>
@@ -274,12 +290,17 @@ const BookingForm = () => {
 
         {currentStep === 2 && (
           <>
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
-              Complete
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
-              Thank you for your submission.
-            </p>
+            <BookingPersonal
+              register={register}
+              errors={errors}
+              updateFormData={updateFormData}
+            />
+          </>
+        )}
+
+        {currentStep === 3 && (
+          <>
+            <p>Stripe payment</p>
           </>
         )}
       </form>
