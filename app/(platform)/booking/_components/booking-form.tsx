@@ -299,7 +299,7 @@ const BookingForm = () => {
         {currentStep === 3 && (
           <>
             <BookingConfirmation data={formData} />
-            <PaymentButton />
+            <PaymentButton service={formData.service} />
           </>
         )}
       </form>

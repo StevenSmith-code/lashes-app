@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import axios from 'axios';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 
-export const PaymentButton = () => {
+interface PaymentButtonProps {
+  service: React.ReactNode;
+}
+
+export const PaymentButton = ({ service }: PaymentButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onClick = async () => {
@@ -15,7 +19,7 @@ export const PaymentButton = () => {
       setIsLoading(true);
 
       const response = await axios.post(`/api/booking/checkout`, {
-        service: "Classic",
+        service,
       });
 
       window.location.assign(response.data.url);
