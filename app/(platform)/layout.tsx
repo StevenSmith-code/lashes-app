@@ -1,9 +1,8 @@
 import React from 'react';
 
-import { Toaster } from 'sonner';
-
 import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
+import { Toaster } from '@/components/ui/sonner';
 
 export default function PlatformLayout({
   children,

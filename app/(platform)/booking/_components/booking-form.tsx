@@ -24,6 +24,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import BookingCalendar from './booking-calendar';
 import BookingPersonal from './booking-personal';
 import BookingTimePicker from './booking-time-picker';
+import { PaymentButton } from './payment-button';
 
 type Inputs = z.infer<typeof FormDataSchema>;
 
@@ -300,7 +301,7 @@ const BookingForm = () => {
 
         {currentStep === 3 && (
           <>
-            <p>Stripe payment</p>
+            <PaymentButton />
           </>
         )}
       </form>
