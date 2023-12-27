@@ -1,4 +1,8 @@
-import { format } from 'date-fns';
+import {
+  format,
+  setHours,
+  setMinutes,
+} from 'date-fns';
 import { create } from 'zustand';
 
 interface BookingState {
@@ -27,7 +31,21 @@ const useBookingStore = create<BookingState>((set) => ({
 
       let dateTime = "";
       if (updatedDate && updatedTime) {
-        dateTime = format(updatedDate, "yyyy-MM-dd") + " " + updatedTime;
+        // Parse the time part and convert it to 24-hour format
+        const [time, modifier] = updatedTime.split(" ");
+        let [hours, minutes] = time.split(":");
+        hours =
+          modifier === "PM" && hours !== "12"
+            ? String(parseInt(hours, 10) + 12)
+            : hours;
+        hours = modifier === "AM" && hours === "12" ? "00" : hours;
+
+        // Combine date and time in ISO 8601 format
+        const combinedDate = setHours(
+          setMinutes(updatedDate, parseInt(minutes)),
+          parseInt(hours)
+        );
+        dateTime = format(combinedDate, "yyyy-MM-dd'T'HH:mm:ss");
       }
 
       return {

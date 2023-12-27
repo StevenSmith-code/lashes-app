@@ -1,5 +1,8 @@
 "use client";
-import { useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
@@ -10,6 +13,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
+import { ServiceList } from '@/actions/get-services';
 import {
   Accordion,
   AccordionContent,
@@ -22,11 +26,21 @@ import { FormDataSchema } from '@/lib/formSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import BookingCalendar from './booking-calendar';
+import BookingConfirmation from './booking-confirmation';
 import BookingPersonal from './booking-personal';
 import BookingTimePicker from './booking-time-picker';
 import { PaymentButton } from './payment-button';
 
 type Inputs = z.infer<typeof FormDataSchema>;
+type Service = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  refillPrice: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 const steps = [
   { id: 1, name: "Service", fields: ["service"] },
@@ -38,35 +52,10 @@ const steps = [
   },
   { id: 4, name: "Confirmation" },
 ];
-const services = [
-  {
-    id: 1,
-    name: "Classic",
-    description:
-      "Classic eyelash extensions are a single eyelash extension attached to a single eyelash.",
-  },
-  {
-    id: 2,
-    name: "3D",
-    description:
-      "3D eyelash extensions are thinner, light weight extensions, 3 extensions per lash,a more natural look.",
-  },
-  {
-    id: 3,
-    name: "5D",
-    description:
-      "5D Volume lashes are a more dramatic look using 5 very lightweight and thin extensions.",
-  },
-  {
-    id: 4,
-    name: "Hybrid",
-    description:
-      "Hybrid lashes are a mix of Classic and 3D. They will fall out naturally along with the natural growth cycle of each lash.",
-  },
-];
 
 const BookingForm = () => {
   const { dateTime } = useBookingStore();
+  const [services, setServices] = useState<Service[]>([]);
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setformData] = useState({
@@ -77,6 +66,14 @@ const BookingForm = () => {
     email: "",
     phoneNumber: "",
   });
+
+  useEffect(() => {
+    const services = async () => {
+      const services = await ServiceList();
+      setServices(services);
+    };
+    services();
+  }, []);
 
   const updateFormData = (fieldName: keyof Inputs, value: string) => {
     setformData((prevFormData) => ({
@@ -301,6 +298,7 @@ const BookingForm = () => {
 
         {currentStep === 3 && (
           <>
+            <BookingConfirmation data={formData} />
             <PaymentButton />
           </>
         )}
