@@ -38,3 +38,11 @@ model StripeCustomer{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model DayOff {
+  id          String   @id @default(uuid())
+  date        DateTime @unique 
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

@@ -1,6 +1,11 @@
 "use client";
 
 import {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
   isBefore,
   isMonday,
   isSameDay,
@@ -10,6 +15,7 @@ import {
 import { format } from 'date-fns-tz';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
+import { getCalendarDaysOff } from '@/actions/get-calendar-days-off';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -29,6 +35,21 @@ const BookingCalendar = ({ onDateChange }: BookingCalendarProps) => {
     date: state.date,
     setDateTime: state.setDateTime,
   }));
+  const [daysOff, setDaysOff] = useState<Date[]>([]);
+
+  useEffect(() => {
+    const fetchDaysOff = async () => {
+      const getDaysOff = await getCalendarDaysOff();
+      const daysOff = getDaysOff.map((dayOff) => new Date(dayOff.date));
+      setDaysOff(daysOff);
+    };
+
+    fetchDaysOff();
+  }, []);
+
+  const isDayOff = (day: Date): boolean => {
+    return daysOff.some((dayOff) => isSameDay(day, dayOff));
+  };
 
   const handleDateChange = (newDate: Date | undefined) => {
     if (newDate) {
@@ -43,7 +64,8 @@ const BookingCalendar = ({ onDateChange }: BookingCalendarProps) => {
       isSunday(day) ||
       isMonday(day) ||
       isBefore(day, today) ||
-      isSameDay(day, today)
+      isSameDay(day, today) ||
+      isDayOff(day)
     );
   };
 

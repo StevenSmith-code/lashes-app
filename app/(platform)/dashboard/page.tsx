@@ -37,9 +37,7 @@ const DashboardPage = () => {
               <TabsTrigger value="analytics" disabled>
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="reports" disabled>
-                Reports
-              </TabsTrigger>
+              <TabsTrigger value="reports">Schedule</TabsTrigger>
               <TabsTrigger value="notifications" disabled>
                 Notifications
               </TabsTrigger>
