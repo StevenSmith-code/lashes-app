@@ -18,6 +18,7 @@ import {
 import { CalendarDateRangePicker } from './_components/date-range-picker';
 import { Overview } from './_components/overview';
 import { RecentSales } from './_components/recent-sales';
+import ScheduleTab from './_components/schedule-tab';
 
 const DashboardPage = () => {
   return (
@@ -37,7 +38,7 @@ const DashboardPage = () => {
               <TabsTrigger value="analytics" disabled>
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="reports">Schedule</TabsTrigger>
+              <TabsTrigger value="schedule">Schedule</TabsTrigger>
               <TabsTrigger value="notifications" disabled>
                 Notifications
               </TabsTrigger>
@@ -167,6 +168,9 @@ const DashboardPage = () => {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+            <TabsContent value="schedule" className="space-y-4">
+              <ScheduleTab />
             </TabsContent>
           </Tabs>
         </div>

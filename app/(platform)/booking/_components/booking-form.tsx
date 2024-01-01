@@ -257,6 +257,7 @@ const BookingForm = () => {
                 render={({ field }) => (
                   <div className="flex items-center justify-center space-x-6">
                     <BookingCalendar
+                      withPopover
                       onDateChange={(date: Date) => {
                         const formattedDate = format(date, "yyyy-MM-dd");
                         const timePart = field.value
