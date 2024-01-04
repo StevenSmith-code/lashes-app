@@ -2,6 +2,7 @@
 import {
   useEffect,
   useState,
+  useTransition,
 } from 'react';
 
 import { format } from 'date-fns';
@@ -31,7 +32,7 @@ import BookingPersonal from './booking-personal';
 import BookingTimePicker from './booking-time-picker';
 import { PaymentButton } from './payment-button';
 
-type Inputs = z.infer<typeof FormDataSchema>;
+export type Inputs = z.infer<typeof FormDataSchema>;
 type Service = {
   id: string;
   name: string;
@@ -55,6 +56,7 @@ const steps = [
 
 const BookingForm = () => {
   const { dateTime } = useBookingStore();
+  const [isPending, startTransition] = useTransition();
   const [services, setServices] = useState<Service[]>([]);
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -96,7 +98,6 @@ const BookingForm = () => {
   });
 
   const processForm: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
     reset();
   };
 
@@ -109,9 +110,6 @@ const BookingForm = () => {
     if (!output) return;
 
     if (currentStep < steps.length - 1) {
-      if (currentStep === steps.length - 2) {
-        await handleSubmit(processForm)();
-      }
       setPreviousStep(currentStep);
       setCurrentStep((step) => step + 1);
     }

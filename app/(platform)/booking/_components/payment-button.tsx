@@ -6,13 +6,17 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import useBookingStore from '@/hooks/useBookingStore';
 
 interface PaymentButtonProps {
-  service: React.ReactNode;
+  service: string;
 }
 
 export const PaymentButton = ({ service }: PaymentButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { dateTime } = useBookingStore();
+
+  console.log(dateTime);
 
   const onClick = async () => {
     try {
@@ -20,6 +24,7 @@ export const PaymentButton = ({ service }: PaymentButtonProps) => {
 
       const response = await axios.post(`/api/booking/checkout`, {
         service,
+        dateTime,
       });
 
       window.location.assign(response.data.url);

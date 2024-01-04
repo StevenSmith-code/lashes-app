@@ -1,14 +1,19 @@
-import React from "react";
+import React from 'react';
 
-import { Poppins } from "next/font/google";
-import localFont from "next/font/local";
-import { redirect } from "next/navigation";
+import { Poppins } from 'next/font/google';
+import localFont from 'next/font/local';
+import { redirect } from 'next/navigation';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
-import { auth } from "@clerk/nextjs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
+import { auth } from '@clerk/nextjs';
 
-import BookingForm from "./_components/booking-form";
+import BookingForm from './_components/booking-form';
 
 const headingFont = localFont({
   src: "../../../public/fonts/font.woff2",

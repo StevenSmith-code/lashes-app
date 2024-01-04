@@ -12,7 +12,9 @@ export async function POST(req: Request) {
     }
 
     // Parse the request body to get booking details
-    const { service } = await req.json();
+    const { service, dateTime } = await req.json();
+
+    const dateTimeISO = dateTime + ".000Z";
 
     // Check if the service exists
     const serviceDetails = await db.service.findUnique({
@@ -24,14 +26,6 @@ export async function POST(req: Request) {
     if (!serviceDetails) {
       return new NextResponse("Service not found", { status: 404 });
     }
-
-    // Create a purchase record in your database
-    await db.purchase.create({
-      data: {
-        userId: user.id,
-        serviceId: serviceDetails.id,
-      },
-    });
 
     // Stripe checkout session creation
     let stripeCustomer = await db.stripeCustomer.findUnique({
@@ -77,6 +71,8 @@ export async function POST(req: Request) {
       metadata: {
         userId: user.id,
         serviceId: serviceDetails.id,
+        dateTime: dateTimeISO,
+        price: serviceDetails.price,
       },
     });
 

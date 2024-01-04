@@ -23,22 +23,38 @@ export async function POST(req: Request) {
 
   const session = event.data.object as Stripe.Checkout.Session;
   const userId = session?.metadata?.userId;
-  const serviceId = session?.metadata?.serviceId; // Changed from courseId to serviceId
+  const serviceId = session?.metadata?.serviceId;
+  const dateTime = session?.metadata?.dateTime;
+  const price = session?.metadata?.price;
 
   if (event.type === "checkout.session.completed") {
-    if (!userId || !serviceId) {
+    if (!userId || !serviceId || !dateTime) {
       return new NextResponse(`Webhook Error: Missing metadata`, {
         status: 400,
       });
     }
 
-    // Create a purchase record with the serviceId
-    await db.purchase.create({
-      data: {
-        serviceId: serviceId,
-        userId: userId,
-      },
-    });
+    try {
+      const dateTimeObject = new Date(dateTime);
+
+      await db.purchase.create({
+        data: {
+          serviceId: serviceId,
+          userId: userId,
+          price: parseInt(price!),
+        },
+      });
+
+      await db.appointment.create({
+        data: {
+          userId: userId,
+          serviceId: serviceId,
+          dateTime: dateTimeObject,
+        },
+      });
+    } catch (error) {
+      console.error("Transaction failed: ", error);
+    }
   } else {
     return new NextResponse(
       `Webhook Error: Unhandled event type ${event.type}`,
