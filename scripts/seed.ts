@@ -37,7 +37,7 @@ async function main() {
       ],
     });
 
-    console.log("tags seeded");
+    console.log("services seeded");
   } catch (error) {
     console.log("Error seeding the database", error);
   } finally {

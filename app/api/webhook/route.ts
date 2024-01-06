@@ -4,6 +4,7 @@ import Stripe from 'stripe';
 
 import { db } from '@/lib/db';
 import { stripe } from '@/lib/stripe';
+import { clerkClient } from '@clerk/nextjs';
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -26,6 +27,7 @@ export async function POST(req: Request) {
   const serviceId = session?.metadata?.serviceId;
   const dateTime = session?.metadata?.dateTime;
   const price = session?.metadata?.price;
+  const user = await clerkClient.users.getUser(userId!);
 
   if (event.type === "checkout.session.completed") {
     if (!userId || !serviceId || !dateTime) {
@@ -36,6 +38,12 @@ export async function POST(req: Request) {
 
     try {
       const dateTimeObject = new Date(dateTime);
+
+      const service = await db.service.findUnique({
+        where: {
+          id: serviceId,
+        },
+      });
 
       await db.purchase.create({
         data: {
@@ -50,6 +58,7 @@ export async function POST(req: Request) {
           userId: userId,
           serviceId: serviceId,
           dateTime: dateTimeObject,
+          name: `${user.firstName} ${user.lastName}`,
         },
       });
     } catch (error) {
