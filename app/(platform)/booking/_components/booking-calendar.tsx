@@ -25,15 +25,53 @@ import {
 } from '@/components/ui/popover';
 import useBookingStore from '@/hooks/useBookingStore';
 import { cn } from '@/lib/utils';
+import { Appointment } from '@prisma/client';
 
 interface BookingCalendarProps {
   onDateChange?: (date: Date) => void;
   withPopover?: boolean;
+  appointments?: Appointment[];
 }
+
+interface DayModifiers {
+  selected?: boolean;
+  today?: boolean;
+  hasAppointment?: boolean;
+}
+
+const getAppointmentModifiers = (appointments: Appointment[]) => {
+  const modifiers = {
+    hasAppointment: appointments.map(
+      (appointment) => new Date(appointment.dateTime)
+    ),
+  };
+  return modifiers;
+};
+
+const renderDay = (
+  day: Date,
+  modifiers: DayModifiers,
+  { locale }: { locale: Locale }
+) => {
+  return (
+    <div
+      className={cn(
+        "day",
+        modifiers.selected && "day-selected",
+        modifiers.today && "day-today",
+        modifiers.hasAppointment && "bg-black"
+      )}
+    >
+      {day.getDate()}
+      {modifiers.hasAppointment && <div className="bg-black" />}
+    </div>
+  );
+};
 
 const BookingCalendar = ({
   onDateChange,
   withPopover,
+  appointments,
 }: BookingCalendarProps) => {
   const { date, setDateTime } = useBookingStore((state) => ({
     date: state.date,
@@ -50,6 +88,14 @@ const BookingCalendar = ({
 
     fetchDaysOff();
   }, []);
+
+  const modifiers = getAppointmentModifiers(appointments || []);
+  const modifiersStyles = {
+    hasAppointment: {
+      backgroundColor: "black",
+      color: "white",
+    },
+  };
 
   const isDayOff = (day: Date): boolean => {
     return daysOff.some((dayOff) => isSameDay(day, dayOff));
@@ -78,6 +124,8 @@ const BookingCalendar = ({
   const calendarContent = (
     <Calendar
       mode="single"
+      modifiers={modifiers}
+      modifiersStyles={modifiersStyles}
       selected={date ?? undefined}
       onSelect={handleDateChange}
       initialFocus

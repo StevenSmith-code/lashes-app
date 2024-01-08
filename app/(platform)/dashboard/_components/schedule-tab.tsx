@@ -50,10 +50,6 @@ const ScheduleTab = () => {
     fetchAppointments();
   }, []);
 
-  useEffect(() => {
-    console.log(appointments);
-  }, [appointments]);
-
   return (
     <div className="w-full flex justify-center gap-4 ">
       <Card className="flex flex-col justify-center items-center max-w-fit">
@@ -61,7 +57,7 @@ const ScheduleTab = () => {
           <CardTitle className="mb-5">Schedule</CardTitle>
         </CardHeader>
         <CardContent>
-          <BookingCalendar />
+          <BookingCalendar appointments={appointments} />
         </CardContent>
       </Card>
       <Card className="w-2/5">
