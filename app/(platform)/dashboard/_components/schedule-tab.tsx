@@ -35,6 +35,7 @@ interface Appointments {
   updatedAt: Date;
   name: string;
   serviceName: string;
+  userPhoneNumber: string;
 }
 
 const ScheduleTab = () => {
@@ -48,6 +49,10 @@ const ScheduleTab = () => {
 
     fetchAppointments();
   }, []);
+
+  useEffect(() => {
+    console.log(appointments);
+  }, [appointments]);
 
   return (
     <div className="w-full flex justify-center gap-4 ">
@@ -67,7 +72,7 @@ const ScheduleTab = () => {
               <TableHead className="w-[100px]">Date</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Service</TableHead>
-              <TableHead>Email</TableHead>
+              <TableHead>Phone Number</TableHead>
               <TableHead className="text-right">Time</TableHead>
             </TableRow>
           </TableHeader>
@@ -79,7 +84,7 @@ const ScheduleTab = () => {
                 </TableCell>
                 <TableCell>{appointment.name}</TableCell>
                 <TableCell>{appointment.serviceName}</TableCell>
-                <TableCell>JohnDoe@gmail.com</TableCell>
+                <TableCell>{appointment.userPhoneNumber}</TableCell>
                 <TableCell className="text-right">
                   {format(
                     utcToZonedTime(appointment.dateTime, "UTC"),

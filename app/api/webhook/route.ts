@@ -39,12 +39,6 @@ export async function POST(req: Request) {
     try {
       const dateTimeObject = new Date(dateTime);
 
-      const service = await db.service.findUnique({
-        where: {
-          id: serviceId,
-        },
-      });
-
       await db.purchase.create({
         data: {
           serviceId: serviceId,
