@@ -4,7 +4,10 @@ import React, {
   useState,
 } from 'react';
 
-import { format } from 'date-fns';
+import {
+  format,
+  isSameDay,
+} from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 
 import { getAppointments } from '@/actions/get-appointments';
@@ -40,6 +43,7 @@ interface Appointments {
 
 const ScheduleTab = () => {
   const [appointments, setAppointments] = useState<Appointments[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -57,7 +61,10 @@ const ScheduleTab = () => {
           <CardTitle className="mb-5">Schedule</CardTitle>
         </CardHeader>
         <CardContent>
-          <BookingCalendar appointments={appointments} />
+          <BookingCalendar
+            appointments={appointments}
+            onDateChange={setSelectedDate}
+          />
         </CardContent>
       </Card>
       <Card className="w-2/5">
@@ -73,22 +80,28 @@ const ScheduleTab = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {appointments?.map((appointment) => (
-              <TableRow key={appointment.id}>
-                <TableCell className="font-medium">
-                  {format(appointment.dateTime, "M/d/yyyy")}
-                </TableCell>
-                <TableCell>{appointment.name}</TableCell>
-                <TableCell>{appointment.serviceName}</TableCell>
-                <TableCell>{appointment.userPhoneNumber}</TableCell>
-                <TableCell className="text-right">
-                  {format(
-                    utcToZonedTime(appointment.dateTime, "UTC"),
-                    "h:mm a"
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
+            {appointments
+              ?.filter((appointment) =>
+                selectedDate
+                  ? isSameDay(new Date(appointment.dateTime), selectedDate)
+                  : true
+              )
+              .map((appointment) => (
+                <TableRow key={appointment.id}>
+                  <TableCell className="font-medium">
+                    {format(appointment.dateTime, "M/d/yyyy")}
+                  </TableCell>
+                  <TableCell>{appointment.name}</TableCell>
+                  <TableCell>{appointment.serviceName}</TableCell>
+                  <TableCell>{appointment.userPhoneNumber}</TableCell>
+                  <TableCell className="text-right">
+                    {format(
+                      utcToZonedTime(appointment.dateTime, "UTC"),
+                      "h:mm a"
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </Card>
