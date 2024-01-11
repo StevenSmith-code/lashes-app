@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { redirect } from 'next/navigation';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -14,13 +16,19 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs';
+import { auth } from '@clerk/nextjs';
 
 import { CalendarDateRangePicker } from './_components/date-range-picker';
 import { Overview } from './_components/overview';
 import { RecentSales } from './_components/recent-sales';
 import ScheduleTab from './_components/schedule-tab';
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
+  const { userId } = auth();
+
+  if (!userId) {
+    return redirect("/");
+  }
   return (
     <>
       <div className="hidden flex-col md:flex mt-14 h-[calc(100vh-56px)]">

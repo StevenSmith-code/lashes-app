@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -44,11 +45,19 @@ interface Appointments {
 const ScheduleTab = () => {
   const [appointments, setAppointments] = useState<Appointments[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      let fetchedAppointments = await getAppointments();
-      setAppointments(fetchedAppointments);
+      try {
+        setIsLoading(true);
+        let fetchedAppointments = await getAppointments();
+        setAppointments(fetchedAppointments);
+      } catch (error) {
+        console.error("Failed to fetch appointments:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchAppointments();
@@ -80,28 +89,32 @@ const ScheduleTab = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {appointments
-              ?.filter((appointment) =>
-                selectedDate
-                  ? isSameDay(new Date(appointment.dateTime), selectedDate)
-                  : true
-              )
-              .map((appointment) => (
-                <TableRow key={appointment.id}>
-                  <TableCell className="font-medium">
-                    {format(appointment.dateTime, "M/d/yyyy")}
-                  </TableCell>
-                  <TableCell>{appointment.name}</TableCell>
-                  <TableCell>{appointment.serviceName}</TableCell>
-                  <TableCell>{appointment.userPhoneNumber}</TableCell>
-                  <TableCell className="text-right">
-                    {format(
-                      utcToZonedTime(appointment.dateTime, "UTC"),
-                      "h:mm a"
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
+            {isLoading ? (
+              <ScheduleTab.Skeleton />
+            ) : (
+              appointments
+                ?.filter((appointment) =>
+                  selectedDate
+                    ? isSameDay(new Date(appointment.dateTime), selectedDate)
+                    : true
+                )
+                .map((appointment) => (
+                  <TableRow key={appointment.id}>
+                    <TableCell className="font-medium">
+                      {format(appointment.dateTime, "M/d/yyyy")}
+                    </TableCell>
+                    <TableCell>{appointment.name}</TableCell>
+                    <TableCell>{appointment.serviceName}</TableCell>
+                    <TableCell>{appointment.userPhoneNumber}</TableCell>
+                    <TableCell className="text-right">
+                      {format(
+                        utcToZonedTime(appointment.dateTime, "UTC"),
+                        "h:mm a"
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+            )}
           </TableBody>
         </Table>
       </Card>
@@ -110,3 +123,29 @@ const ScheduleTab = () => {
 };
 
 export default ScheduleTab;
+
+ScheduleTab.Skeleton = function SkeletonScheduleTab() {
+  return (
+    <>
+      {new Array(5).fill(null).map((_, i) => (
+        <TableRow key={i}>
+          <TableCell>
+            <Skeleton className="h-4 w-full" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-4 w-full" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-4 w-full" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-4 w-full" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-4 w-full" />
+          </TableCell>
+        </TableRow>
+      ))}
+    </>
+  );
+};
