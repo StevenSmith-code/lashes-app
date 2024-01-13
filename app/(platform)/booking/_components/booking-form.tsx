@@ -2,7 +2,6 @@
 import {
   useEffect,
   useState,
-  useTransition,
 } from 'react';
 
 import { format } from 'date-fns';
@@ -14,6 +13,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
+import { getAppointments } from '@/actions/get-appointments';
 import { ServiceList } from '@/actions/get-services';
 import {
   Accordion,
@@ -42,6 +42,16 @@ type Service = {
   createdAt: Date;
   updatedAt: Date;
 };
+type Appointment = {
+  id: string;
+  userId: string;
+  serviceId: string;
+  dateTime: Date;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  service: Service;
+};
 
 const steps = [
   { id: 1, name: "Service", fields: ["service"] },
@@ -56,7 +66,6 @@ const steps = [
 
 const BookingForm = () => {
   const { dateTime } = useBookingStore();
-  const [isPending, startTransition] = useTransition();
   const [services, setServices] = useState<Service[]>([]);
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -68,6 +77,15 @@ const BookingForm = () => {
     email: "",
     phoneNumber: "",
   });
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      const { appointments } = await getAppointments();
+
+      setAppointments(appointments);
+    };
+    fetchAppointments();
+  }, []);
 
   useEffect(() => {
     const services = async () => {
@@ -265,6 +283,7 @@ const BookingForm = () => {
                       }}
                     />
                     <BookingTimePicker
+                      appointments={appointments}
                       onTimeChange={(time12h: string) => {
                         const time24h = convertTo24HourFormat(time12h);
                         const datePart = field.value

@@ -24,5 +24,5 @@ export async function getAppointments() {
       };
     })
   );
-  return modifiedAppointments;
+  return { modifiedAppointments, appointments };
 }

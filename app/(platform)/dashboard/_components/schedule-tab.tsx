@@ -51,8 +51,8 @@ const ScheduleTab = () => {
     const fetchAppointments = async () => {
       try {
         setIsLoading(true);
-        let fetchedAppointments = await getAppointments();
-        setAppointments(fetchedAppointments);
+        let { modifiedAppointments } = await getAppointments();
+        setAppointments(modifiedAppointments);
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
       } finally {
