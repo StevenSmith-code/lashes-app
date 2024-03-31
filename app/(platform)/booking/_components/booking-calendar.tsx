@@ -91,7 +91,11 @@ const BookingCalendar = ({
   const disabledDays = (day: Date) => {
     const today = startOfDay(new Date());
     const formattedDate = format(day, "yyyy-MM-dd");
-    const isFullyBooked = bookedSlots[formattedDate]?.size >= 1;
+    const isFullyBooked = bookedSlots?.[formattedDate]?.size >= 1;
+    if (!bookedSlots) {
+      <p>loading...</p>;
+    }
+
     return (
       isSunday(day) ||
       isMonday(day) ||
