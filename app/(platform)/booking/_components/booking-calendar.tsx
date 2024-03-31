@@ -27,16 +27,13 @@ import useBookingStore from '@/hooks/useBookingStore';
 import { cn } from '@/lib/utils';
 import { Appointment } from '@prisma/client';
 
+type BookedSlots = Record<string, Set<string>>;
+
 interface BookingCalendarProps {
   onDateChange?: (date: Date) => void;
   withPopover?: boolean;
   appointments?: Appointment[];
-}
-
-interface DayModifiers {
-  selected?: boolean;
-  today?: boolean;
-  hasAppointment?: boolean;
+  bookedSlots: BookedSlots;
 }
 
 const getAppointmentModifiers = (appointments: Appointment[]) => {
@@ -48,29 +45,10 @@ const getAppointmentModifiers = (appointments: Appointment[]) => {
   return modifiers;
 };
 
-const renderDay = (
-  day: Date,
-  modifiers: DayModifiers,
-  { locale }: { locale: Locale }
-) => {
-  return (
-    <div
-      className={cn(
-        "day",
-        modifiers.selected && "day-selected",
-        modifiers.today && "day-today",
-        modifiers.hasAppointment && "bg-black"
-      )}
-    >
-      {day.getDate()}
-      {modifiers.hasAppointment && <div className="bg-black" />}
-    </div>
-  );
-};
-
 const BookingCalendar = ({
   onDateChange,
   withPopover,
+  bookedSlots,
   appointments,
 }: BookingCalendarProps) => {
   const { date, setDateTime } = useBookingStore((state) => ({
@@ -112,12 +90,15 @@ const BookingCalendar = ({
 
   const disabledDays = (day: Date) => {
     const today = startOfDay(new Date());
+    const formattedDate = format(day, "yyyy-MM-dd");
+    const isFullyBooked = bookedSlots[formattedDate]?.size >= 1;
     return (
       isSunday(day) ||
       isMonday(day) ||
       isBefore(day, today) ||
       isSameDay(day, today) ||
-      isDayOff(day)
+      isDayOff(day) ||
+      isFullyBooked
     );
   };
 

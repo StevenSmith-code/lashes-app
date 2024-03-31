@@ -78,11 +78,31 @@ const BookingForm = () => {
     phoneNumber: "",
   });
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [bookedSlots, setBookedSlots] = useState<Record<string, Set<string>>>(
+    {}
+  );
+
+  const getBookedTimeSlots = (
+    appointments: Appointment[]
+  ): Record<string, Set<string>> => {
+    const bookedSlots: Record<string, Set<string>> = {};
+    appointments.forEach((appointment) => {
+      const dateStr = format(appointment.dateTime, "yyyy-MM-dd");
+      const timeStr = format(appointment.dateTime, "HH:mm");
+      if (!bookedSlots[dateStr]) {
+        bookedSlots[dateStr] = new Set();
+      }
+      bookedSlots[dateStr].add(timeStr);
+    });
+    return bookedSlots;
+  };
+
   useEffect(() => {
     const fetchAppointments = async () => {
       const { appointments } = await getAppointments();
-
       setAppointments(appointments);
+      const newBookedSlots = getBookedTimeSlots(appointments);
+      setBookedSlots(newBookedSlots); // Set the booked slots based on appointments
     };
     fetchAppointments();
   }, []);
@@ -225,8 +245,12 @@ const BookingForm = () => {
                           <p className="text-sm text-muted-foreground">
                             {service.description}
                           </p>
+                          <p className="text-sm">
+                            ${service.price} for a full set and $
+                            {service.refillPrice} for a refill.
+                          </p>
                           <Button
-                            variant={"ghost"}
+                            variant={"outline"}
                             onClick={() => {
                               setformData({
                                 ...formData,
@@ -274,6 +298,8 @@ const BookingForm = () => {
                   <div className="flex items-center justify-center space-x-6">
                     <BookingCalendar
                       withPopover
+                      appointments={appointments}
+                      bookedSlots={bookedSlots}
                       onDateChange={(date: Date) => {
                         const formattedDate = format(date, "yyyy-MM-dd");
                         const timePart = field.value
@@ -284,6 +310,7 @@ const BookingForm = () => {
                     />
                     <BookingTimePicker
                       appointments={appointments}
+                      bookedSlots={bookedSlots}
                       onTimeChange={(time12h: string) => {
                         const time24h = convertTo24HourFormat(time12h);
                         const datePart = field.value

@@ -2,7 +2,6 @@
 import React, { useMemo } from 'react';
 
 import { format } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 import { Clock } from 'lucide-react';
 
 import {
@@ -34,45 +33,32 @@ type Appointment = {
   updatedAt: Date;
   service: Service;
 };
+type BookedSlots = Record<string, Set<string>>;
 
 interface BookingTimePickerProps {
   onTimeChange: (time: string) => void;
   appointments: Appointment[];
+  bookedSlots: BookedSlots;
 }
 
-const BookingTimePicker = ({
+const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
   onTimeChange,
   appointments,
-}: BookingTimePickerProps) => {
+  bookedSlots,
+}) => {
   const { time, date, setDateTime } = useBookingStore((state) => ({
     time: state.time,
-
     date: state.date,
     setDateTime: state.setDateTime,
   }));
 
-  const isTimeBooked = (timeOption: string, selectedDate: Date) => {
-    if (!selectedDate) return false;
-
-    return appointments.some((appointment) => {
-      if (
-        !appointment.dateTime ||
-        isNaN(new Date(appointment.dateTime).getTime())
-      ) {
-        return false;
-      }
-      const appointmentDateTimeUTC = utcToZonedTime(
-        appointment.dateTime,
-        "UTC"
-      );
-      const appointmentDate = format(appointmentDateTimeUTC, "yyyy-MM-dd");
-      const appointmentTime = format(appointmentDateTimeUTC, "h:mm a");
-
-      const selectedDateString = format(selectedDate, "yyyy-MM-dd");
-      return (
-        appointmentDate === selectedDateString && appointmentTime === timeOption
-      );
-    });
+  // Use the bookedSlots data to determine if a time slot is booked
+  const isTimeSlotBooked = (
+    timeOption: string,
+    selectedDate: Date
+  ): boolean => {
+    const formattedDate = format(selectedDate, "yyyy-MM-dd");
+    return bookedSlots[formattedDate]?.has(timeOption);
   };
 
   const handleTimeChange = (newTime: string) => {
@@ -88,7 +74,7 @@ const BookingTimePicker = ({
       const formattedHour = hour > 12 ? hour - 12 : hour;
       const period = hour >= 12 ? "PM" : "AM";
       const timeOption = `${formattedHour}:00 ${period}`;
-      if (!isTimeBooked(timeOption, date!)) {
+      if (!isTimeSlotBooked(timeOption, date!)) {
         options.push(timeOption);
       }
     }
@@ -103,7 +89,7 @@ const BookingTimePicker = ({
       const formattedHour = hour > 12 ? hour - 12 : hour;
       const period = hour >= 12 ? "PM" : "AM";
       const timeOption = `${formattedHour}:00 ${period}`;
-      if (!isTimeBooked(timeOption, date!)) {
+      if (!isTimeSlotBooked(timeOption, date!)) {
         options.push(timeOption);
       }
     }

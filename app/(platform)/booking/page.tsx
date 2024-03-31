@@ -43,7 +43,6 @@ const BookingPage = () => {
       <Tabs defaultValue="lashes" className="w-[600px] text-center">
         <TabsList>
           <TabsTrigger value="lashes">Lashes</TabsTrigger>
-          <TabsTrigger value="tanning">Tanning</TabsTrigger>
         </TabsList>
         <TabsContent value="lashes">
           <div
@@ -65,7 +64,6 @@ const BookingPage = () => {
           </div>
           <BookingForm />
         </TabsContent>
-        <TabsContent value="tanning">Change your password here.</TabsContent>
       </Tabs>
     </div>
   );
