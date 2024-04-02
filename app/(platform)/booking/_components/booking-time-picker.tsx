@@ -52,7 +52,6 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
     setDateTime: state.setDateTime,
   }));
 
-  // Use the bookedSlots data to determine if a time slot is booked
   const isTimeSlotBooked = (
     timeOption: string,
     selectedDate: Date
@@ -61,40 +60,36 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
     return bookedSlots[formattedDate]?.has(timeOption);
   };
 
-  const handleTimeChange = (newTime: string) => {
-    // Update the time in the store
-    setDateTime(date, newTime);
-    // Update the time in the form
-    onTimeChange(newTime);
-  };
-  const generateTimeOptions = () => {
-    const options = [];
-    for (let hour = 11; hour <= 18; hour++) {
-      // Format hours for 12-hour clock
-      const formattedHour = hour > 12 ? hour - 12 : hour;
-      const period = hour >= 12 ? "PM" : "AM";
-      const timeOption = `${formattedHour}:00 ${period}`;
-      if (!isTimeSlotBooked(timeOption, date!)) {
-        options.push(timeOption);
-      }
-    }
-    return options;
+  const handleTimeChange = (time12h: string) => {
+    const time24h = convertTo24HourFormat(time12h);
+    const datePart = date
+      ? format(date, "yyyy-MM-dd")
+      : format(new Date(), "yyyy-MM-dd");
+    const fullDateTime = `${datePart}T${time24h}Z`;
+
+    // Update the store with the new time
+    setDateTime(new Date(fullDateTime)); // Assuming setDateTime expects a Date object
+    onTimeChange(fullDateTime); // Here you call the prop function to communicate the change up
+
+    console.log(fullDateTime); // correctly logs the UTC time
   };
 
   const timeOptions = useMemo(() => {
     if (!date) return [];
     const options = [];
     for (let hour = 11; hour <= 18; hour++) {
-      // Format hours for 12-hour clock
+      // Skip over any specifically closed hours like 14 (2 PM)
+      if (hour === 14) continue;
+
       const formattedHour = hour > 12 ? hour - 12 : hour;
       const period = hour >= 12 ? "PM" : "AM";
       const timeOption = `${formattedHour}:00 ${period}`;
-      if (!isTimeSlotBooked(timeOption, date!)) {
+      if (!isTimeSlotBooked(timeOption, date)) {
         options.push(timeOption);
       }
     }
     return options;
-  }, [date, appointments]);
+  }, [date, bookedSlots]);
 
   return (
     <DropdownMenu>
@@ -102,13 +97,11 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
         <button
           className={cn(
             "bg-background hover:bg-primary-foreground transition px-4 py-2 rounded-md border border-zinc-200 flex items-center justify-center hover:text-black",
-            {
-              "text-muted-foreground": !time,
-            }
+            { "text-muted-foreground": !time }
           )}
         >
           <Clock className="w-4 h-4 mr-2" />
-          {`${time} MST` || "Select Time"}
+          {time ? format(date!, "HH:mm") : "Select Time"}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="bottom">
@@ -126,3 +119,13 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
 };
 
 export default BookingTimePicker;
+
+function convertTo24HourFormat(time12h: string): string {
+  const [time, modifier] = time12h.split(" ");
+  let [hours, minutes] = time.split(":");
+
+  if (hours === "12") hours = "00";
+  if (modifier.toUpperCase() === "PM") hours = String(parseInt(hours, 10) + 12);
+
+  return `${hours.padStart(2, "0")}:${minutes}`;
+}

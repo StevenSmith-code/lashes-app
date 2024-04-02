@@ -33,7 +33,6 @@ interface BookingCalendarProps {
   onDateChange?: (date: Date) => void;
   withPopover?: boolean;
   appointments?: Appointment[];
-  bookedSlots: BookedSlots;
 }
 
 const getAppointmentModifiers = (appointments: Appointment[]) => {
@@ -48,7 +47,6 @@ const getAppointmentModifiers = (appointments: Appointment[]) => {
 const BookingCalendar = ({
   onDateChange,
   withPopover,
-  bookedSlots,
   appointments,
 }: BookingCalendarProps) => {
   const { date, setDateTime } = useBookingStore((state) => ({
@@ -90,19 +88,13 @@ const BookingCalendar = ({
 
   const disabledDays = (day: Date) => {
     const today = startOfDay(new Date());
-    const formattedDate = format(day, "yyyy-MM-dd");
-    const isFullyBooked = bookedSlots?.[formattedDate]?.size >= 1;
-    if (!bookedSlots) {
-      <p>loading...</p>;
-    }
 
     return (
       isSunday(day) ||
       isMonday(day) ||
       isBefore(day, today) ||
       isSameDay(day, today) ||
-      isDayOff(day) ||
-      isFullyBooked
+      isDayOff(day)
     );
   };
 

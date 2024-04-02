@@ -37,9 +37,7 @@ export function Navbar() {
             </Button>
           ) : (
             <Button size={"sm"} asChild>
-              <Link href={user ? "/booking" : "/sign-up"}>
-                Make an appointment
-              </Link>
+              <Link href={"/booking"}>Make an appointment</Link>
             </Button>
           )}
         </div>

@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Poppins } from 'next/font/google';
 import localFont from 'next/font/local';
-import { redirect } from 'next/navigation';
 
 import {
   Tabs,
@@ -11,7 +10,6 @@ import {
   TabsTrigger,
 } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import { auth } from '@clerk/nextjs';
 
 import BookingForm from './_components/booking-form';
 
@@ -24,9 +22,6 @@ const textFont = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 const BookingPage = () => {
-  const { userId } = auth();
-  if (!userId) return redirect("/sign-in");
-
   return (
     <div className="flex items-center justify-center flex-col h-[calc(100vh-56px)]">
       <div

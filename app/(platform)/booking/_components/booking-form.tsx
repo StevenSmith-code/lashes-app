@@ -4,7 +4,7 @@ import {
   useState,
 } from 'react';
 
-import { format } from 'date-fns';
+import { format } from 'date-fns-tz';
 import { motion } from 'framer-motion';
 import {
   Controller,
@@ -87,8 +87,16 @@ const BookingForm = () => {
   ): Record<string, Set<string>> => {
     const bookedSlots: Record<string, Set<string>> = {};
     appointments.forEach((appointment) => {
-      const dateStr = format(appointment.dateTime, "yyyy-MM-dd");
-      const timeStr = format(appointment.dateTime, "HH:mm");
+      const isoString = appointment.dateTime.toISOString();
+      const dateObject = new Date(isoString);
+      console.log(dateObject);
+      const dateStr = format(dateObject, "yyyy-MM-dd", {
+        timeZone: "UTC",
+      });
+      const timeStr = format(dateObject, "HH:mm", {
+        timeZone: "UTC",
+      });
+
       if (!bookedSlots[dateStr]) {
         bookedSlots[dateStr] = new Set();
       }
@@ -100,12 +108,17 @@ const BookingForm = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       const { appointments } = await getAppointments();
+
       setAppointments(appointments);
       const newBookedSlots = getBookedTimeSlots(appointments);
       setBookedSlots(newBookedSlots); // Set the booked slots based on appointments
     };
     fetchAppointments();
   }, []);
+
+  useEffect(() => {
+    console.log(bookedSlots);
+  }, [bookedSlots]);
 
   useEffect(() => {
     const services = async () => {
@@ -299,7 +312,6 @@ const BookingForm = () => {
                     <BookingCalendar
                       withPopover
                       appointments={appointments}
-                      bookedSlots={bookedSlots}
                       onDateChange={(date: Date) => {
                         const formattedDate = format(date, "yyyy-MM-dd");
                         const timePart = field.value
@@ -316,7 +328,8 @@ const BookingForm = () => {
                         const datePart = field.value
                           ? field.value.split("T")[0]
                           : format(new Date(), "yyyy-MM-dd");
-                        field.onChange(`${datePart}T${time24h}`);
+                        field.onChange(`${datePart}T${time24h}Z`);
+                        console.log(`${datePart}T${time24h}Z`);
                       }}
                     />
                   </div>
