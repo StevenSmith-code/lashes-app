@@ -323,14 +323,6 @@ const BookingForm = () => {
                     <BookingTimePicker
                       appointments={appointments}
                       bookedSlots={bookedSlots}
-                      onTimeChange={(time12h: string) => {
-                        const time24h = convertTo24HourFormat(time12h);
-                        const datePart = field.value
-                          ? field.value.split("T")[0]
-                          : format(new Date(), "yyyy-MM-dd");
-                        field.onChange(`${datePart}T${time24h}Z`);
-                        console.log(`${datePart}T${time24h}Z`);
-                      }}
                     />
                   </div>
                 )}

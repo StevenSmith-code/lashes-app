@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { format } from 'date-fns';
 import { Clock } from 'lucide-react';
@@ -36,20 +36,18 @@ type Appointment = {
 type BookedSlots = Record<string, Set<string>>;
 
 interface BookingTimePickerProps {
-  onTimeChange: (time: string) => void;
   appointments: Appointment[];
   bookedSlots: BookedSlots;
 }
 
 const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
-  onTimeChange,
-  appointments,
   bookedSlots,
 }) => {
-  const { time, date, setDateTime } = useBookingStore((state) => ({
+  const { time, date, setDate, setTime } = useBookingStore((state) => ({
     time: state.time,
     date: state.date,
-    setDateTime: state.setDateTime,
+    setDate: state.setDate,
+    setTime: state.setTime,
   }));
 
   const isTimeSlotBooked = (
@@ -65,31 +63,31 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
     const datePart = date
       ? format(date, "yyyy-MM-dd")
       : format(new Date(), "yyyy-MM-dd");
-    const fullDateTime = `${datePart}T${time24h}Z`;
+    const fullDateTime = `${datePart}T${time24h}:00Z`;
 
     // Update the store with the new time
-    setDateTime(new Date(fullDateTime)); // Assuming setDateTime expects a Date object
-    onTimeChange(fullDateTime); // Here you call the prop function to communicate the change up
 
-    console.log(fullDateTime); // correctly logs the UTC time
+    setDate(new Date(datePart));
+    setTime(time24h);
+
+    console.log(fullDateTime); // Logs the full date-time string in ISO format
   };
-
-  const timeOptions = useMemo(() => {
-    if (!date) return [];
-    const options = [];
+  // Generate time options directly without useMemo
+  let timeOptions = ["Pick a date first."];
+  if (date) {
+    timeOptions = [];
     for (let hour = 11; hour <= 18; hour++) {
-      // Skip over any specifically closed hours like 14 (2 PM)
-      if (hour === 14) continue;
+      if (hour === 14) continue; // Skip over any specifically closed hours like 14 (2 PM)
 
       const formattedHour = hour > 12 ? hour - 12 : hour;
       const period = hour >= 12 ? "PM" : "AM";
       const timeOption = `${formattedHour}:00 ${period}`;
+
       if (!isTimeSlotBooked(timeOption, date)) {
-        options.push(timeOption);
+        timeOptions.push(timeOption);
       }
     }
-    return options;
-  }, [date, bookedSlots]);
+  }
 
   return (
     <DropdownMenu>
@@ -101,7 +99,7 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
           )}
         >
           <Clock className="w-4 h-4 mr-2" />
-          {time ? format(date!, "HH:mm") : "Select Time"}
+          {time || "Select Time"}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="bottom">
@@ -120,7 +118,7 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
 
 export default BookingTimePicker;
 
-function convertTo24HourFormat(time12h: string): string {
+export function convertTo24HourFormat(time12h: string): string {
   const [time, modifier] = time12h.split(" ");
   let [hours, minutes] = time.split(":");
 

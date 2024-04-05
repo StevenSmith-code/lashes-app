@@ -5,6 +5,10 @@ import {
 } from 'date-fns';
 import { create } from 'zustand';
 
+import {
+  convertTo24HourFormat,
+} from '@/app/(platform)/booking/_components/booking-time-picker';
+
 interface BookingState {
   date: Date | null;
   time: string;
@@ -27,30 +31,25 @@ const useBookingStore = create<BookingState>((set) => ({
   setDateTime: (newDate, newTime) => {
     set((state) => {
       const updatedDate = newDate ?? state.date;
-      const updatedTime = newTime ?? state.time;
-
       let dateTime = "";
-      if (updatedDate && updatedTime) {
-        // Parse the time part and convert it to 24-hour format
-        const [time, modifier] = updatedTime.split(" ");
-        let [hours, minutes] = time.split(":");
-        hours =
-          modifier === "PM" && hours !== "12"
-            ? String(parseInt(hours, 10) + 12)
-            : hours;
-        hours = modifier === "AM" && hours === "12" ? "00" : hours;
+      let formattedTime = "";
+
+      if (updatedDate && newTime) {
+        const time24h = convertTo24HourFormat(newTime);
+        let [hours, minutes] = time24h.split(":");
 
         // Combine date and time in ISO 8601 format
         const combinedDate = setHours(
-          setMinutes(updatedDate, parseInt(minutes)),
-          parseInt(hours)
+          setMinutes(updatedDate, parseInt(minutes, 10)),
+          parseInt(hours, 10)
         );
         dateTime = format(combinedDate, "yyyy-MM-dd'T'HH:mm:ss");
+        formattedTime = format(combinedDate, "HH:mm"); // Use this to display just the time
       }
 
       return {
         date: updatedDate,
-        time: updatedTime,
+        time: formattedTime, // Update with just the formatted time
         dateTime,
       };
     });
