@@ -47,9 +47,9 @@ const BookingCalendar = ({
   withPopover,
   appointments,
 }: BookingCalendarProps) => {
-  const { date, setDateTime } = useBookingStore((state) => ({
+  const { date, setDate } = useBookingStore((state) => ({
     date: state.date,
-    setDateTime: state.setDateTime,
+    setDate: state.setDate,
   }));
   const [daysOff, setDaysOff] = useState<Date[]>([]);
 
@@ -77,7 +77,7 @@ const BookingCalendar = ({
 
   const handleDateChange = (newDate: Date | undefined) => {
     if (newDate) {
-      setDateTime(newDate); // Update the date in the store
+      setDate(newDate); // Update the date in the store
       if (onDateChange) {
         onDateChange(newDate); // Call the onDateChange prop if it exists
       }

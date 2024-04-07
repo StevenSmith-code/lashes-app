@@ -6,7 +6,6 @@ import useBookingStore from '@/hooks/useBookingStore';
 
 type BookingData = {
   service: string;
-  dateTime: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -18,9 +17,9 @@ type BookingConfirmationProps = {
 };
 
 const BookingConfirmation = ({ data }: BookingConfirmationProps) => {
-  const { dateTime } = useBookingStore();
+  const { date } = useBookingStore();
+  const displayDate = format(date!, "MM-dd-yyyy hh:mm a");
 
-  const displayDateTime = format(new Date(dateTime), "MM-dd-yyyy hh:mm a");
   return (
     <div className="flex flex-col items-stretch justify-center space-y-3 mb-24">
       <div className="flex justify-between items-center">
@@ -39,7 +38,7 @@ const BookingConfirmation = ({ data }: BookingConfirmationProps) => {
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Date:
         </h3>
-        <p className="leading-7">{displayDateTime}</p>
+        <p className="leading-7">{displayDate}</p>
       </div>
     </div>
   );

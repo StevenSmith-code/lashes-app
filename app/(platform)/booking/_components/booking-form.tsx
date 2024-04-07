@@ -22,7 +22,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import useBookingStore from '@/hooks/useBookingStore';
 import { FormDataSchema } from '@/lib/formSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -65,13 +64,11 @@ const steps = [
 ];
 
 const BookingForm = () => {
-  const { dateTime } = useBookingStore();
   const [services, setServices] = useState<Service[]>([]);
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setformData] = useState({
     service: "",
-    dateTime,
     firstName: "",
     lastName: "",
     email: "",

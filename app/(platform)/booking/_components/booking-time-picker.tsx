@@ -70,13 +70,13 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
     const dateString = format(zonedDate, "yyyy-MM-dd", {
       timeZone: MST_TIMEZONE,
     });
-    const dateTimeString = `${dateString}T${time24h}:00-07:00`;
+    const dateTimeString = `${dateString}T${time24h}`;
     const mstDateTime = zonedTimeToUtc(dateTimeString, MST_TIMEZONE);
 
     setDate(mstDateTime);
     setTime(time12h);
 
-    console.log("Date: " + dateTimeString + "Time: " + time12h);
+    console.log("Date: " + mstDateTime + "Time: " + time12h);
   };
   // Generate time options directly without useMemo
   let timeOptions = ["Pick a date first."];
