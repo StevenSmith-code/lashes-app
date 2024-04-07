@@ -1,7 +1,11 @@
 "use client";
 import React from 'react';
 
-import { format } from 'date-fns';
+import {
+  format,
+  utcToZonedTime,
+  zonedTimeToUtc,
+} from 'date-fns-tz';
 import { Clock } from 'lucide-react';
 
 import {
@@ -40,6 +44,8 @@ interface BookingTimePickerProps {
   bookedSlots: BookedSlots;
 }
 
+const MST_TIMEZONE = "America/Denver";
+
 const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
   bookedSlots,
 }) => {
@@ -60,17 +66,17 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
 
   const handleTimeChange = (time12h: string) => {
     const time24h = convertTo24HourFormat(time12h);
-    const datePart = date
-      ? format(date, "yyyy-MM-dd")
-      : format(new Date(), "yyyy-MM-dd");
-    const fullDateTime = `${datePart}T${time24h}:00Z`;
+    const zonedDate = date ? utcToZonedTime(date, MST_TIMEZONE) : new Date();
+    const dateString = format(zonedDate, "yyyy-MM-dd", {
+      timeZone: MST_TIMEZONE,
+    });
+    const dateTimeString = `${dateString}T${time24h}:00-07:00`;
+    const mstDateTime = zonedTimeToUtc(dateTimeString, MST_TIMEZONE);
 
-    // Update the store with the new time
+    setDate(mstDateTime);
+    setTime(time12h);
 
-    setDate(new Date(datePart));
-    setTime(time24h);
-
-    console.log(fullDateTime); // Logs the full date-time string in ISO format
+    console.log("Date: " + dateTimeString + "Time: " + time12h);
   };
   // Generate time options directly without useMemo
   let timeOptions = ["Pick a date first."];

@@ -27,8 +27,6 @@ import useBookingStore from '@/hooks/useBookingStore';
 import { cn } from '@/lib/utils';
 import { Appointment } from '@prisma/client';
 
-type BookedSlots = Record<string, Set<string>>;
-
 interface BookingCalendarProps {
   onDateChange?: (date: Date) => void;
   withPopover?: boolean;

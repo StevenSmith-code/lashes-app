@@ -117,10 +117,6 @@ const BookingForm = () => {
   }, []);
 
   useEffect(() => {
-    console.log(bookedSlots);
-  }, [bookedSlots]);
-
-  useEffect(() => {
     const services = async () => {
       const services = await ServiceList();
       setServices(services);
@@ -173,20 +169,6 @@ const BookingForm = () => {
     }
   };
 
-  const convertTo24HourFormat = (time12h: string): string => {
-    const [time, modifier] = time12h.split(" ");
-    let [hours, minutes] = time.split(":");
-
-    if (hours === "12") {
-      hours = "00";
-    }
-
-    if (modifier === "PM" && hours !== "12") {
-      hours = (parseInt(hours, 10) + 12).toString();
-    }
-
-    return `${hours.padStart(2, "0")}:${minutes}:00`;
-  };
   return (
     <section className="flex flex-col justify-between mt-10 ">
       {/* steps */}
