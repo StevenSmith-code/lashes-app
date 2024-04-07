@@ -108,7 +108,7 @@ const ScheduleTab = () => {
                     <TableCell>{appointment.userPhoneNumber}</TableCell>
                     <TableCell className="text-right">
                       {format(
-                        utcToZonedTime(appointment.dateTime, "UTC"),
+                        utcToZonedTime(appointment.dateTime, "America/Denver"),
                         "h:mm a"
                       )}
                     </TableCell>
