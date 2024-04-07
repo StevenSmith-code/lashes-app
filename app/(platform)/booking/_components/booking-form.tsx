@@ -27,7 +27,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import BookingCalendar from './booking-calendar';
 import BookingConfirmation from './booking-confirmation';
-import BookingPersonal from './booking-personal';
 import BookingTimePicker from './booking-time-picker';
 import { PaymentButton } from './payment-button';
 
@@ -55,12 +54,8 @@ type Appointment = {
 const steps = [
   { id: 1, name: "Service", fields: ["service"] },
   { id: 2, name: "Date and time", fields: ["dateTime"] },
-  {
-    id: 3,
-    name: "Personal",
-    fields: ["firstName", "lastName", "email", "phoneNumber"],
-  },
-  { id: 4, name: "Confirmation" },
+
+  { id: 3, name: "Confirmation" },
 ];
 
 const BookingForm = () => {
@@ -86,7 +81,6 @@ const BookingForm = () => {
     appointments.forEach((appointment) => {
       const isoString = appointment.dateTime.toISOString();
       const dateObject = new Date(isoString);
-      console.log(dateObject);
       const dateStr = format(dateObject, "yyyy-MM-dd", {
         timeZone: "UTC",
       });
@@ -120,13 +114,6 @@ const BookingForm = () => {
     };
     services();
   }, []);
-
-  const updateFormData = (fieldName: keyof Inputs, value: string) => {
-    setformData((prevFormData) => ({
-      ...prevFormData,
-      [fieldName]: value,
-    }));
-  };
 
   const delta = currentStep - previousStep;
 
@@ -317,17 +304,7 @@ const BookingForm = () => {
 
         {currentStep === 2 && (
           <>
-            <BookingPersonal
-              register={register}
-              errors={errors}
-              updateFormData={updateFormData}
-            />
-          </>
-        )}
-
-        {currentStep === 3 && (
-          <>
-            <BookingConfirmation data={formData} />
+            <BookingConfirmation service={formData.service} />
             <PaymentButton service={formData.service} />
           </>
         )}

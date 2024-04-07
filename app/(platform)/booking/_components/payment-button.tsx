@@ -14,9 +14,7 @@ interface PaymentButtonProps {
 
 export const PaymentButton = ({ service }: PaymentButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { dateTime } = useBookingStore();
-
-  console.log(dateTime);
+  const { date } = useBookingStore();
 
   const onClick = async () => {
     try {
@@ -24,7 +22,7 @@ export const PaymentButton = ({ service }: PaymentButtonProps) => {
 
       const response = await axios.post(`/api/booking/checkout`, {
         service,
-        dateTime,
+        date,
       });
 
       window.location.assign(response.data.url);

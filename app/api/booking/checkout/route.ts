@@ -12,9 +12,7 @@ export async function POST(req: Request) {
     }
 
     // Parse the request body to get booking details
-    const { service, dateTime } = await req.json();
-
-    const dateTimeISO = dateTime + ".000Z";
+    const { service, date } = await req.json();
 
     // Check if the service exists
     const serviceDetails = await db.service.findUnique({
@@ -71,7 +69,7 @@ export async function POST(req: Request) {
       metadata: {
         userId: user.id,
         serviceId: serviceDetails.id,
-        dateTime: dateTimeISO,
+        date: date,
         price: serviceDetails.price,
       },
     });

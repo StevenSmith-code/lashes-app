@@ -3,21 +3,15 @@ import React from 'react';
 import { format } from 'date-fns';
 
 import useBookingStore from '@/hooks/useBookingStore';
-
-type BookingData = {
-  service: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-};
+import { useUser } from '@clerk/nextjs';
 
 type BookingConfirmationProps = {
-  data: BookingData;
+  service: string;
 };
 
-const BookingConfirmation = ({ data }: BookingConfirmationProps) => {
+const BookingConfirmation = ({ service }: BookingConfirmationProps) => {
   const { date } = useBookingStore();
+  const { user } = useUser();
   const displayDate = format(date!, "MM-dd-yyyy hh:mm a");
 
   return (
@@ -26,13 +20,13 @@ const BookingConfirmation = ({ data }: BookingConfirmationProps) => {
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Name:
         </h3>
-        <p className="leading-7">{`${data.firstName} ${data.lastName}`}</p>
+        <p className="leading-7">{`${user?.firstName} ${user?.lastName}`}</p>
       </div>
       <div className="flex justify-between items-center">
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Service:
         </h3>
-        <p className="leading-7">{data.service}</p>
+        <p className="leading-7">{service}</p>
       </div>
       <div className="flex justify-between items-center">
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">

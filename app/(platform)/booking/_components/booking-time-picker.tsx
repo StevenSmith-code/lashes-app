@@ -61,7 +61,8 @@ const BookingTimePicker: React.FC<BookingTimePickerProps> = ({
     selectedDate: Date
   ): boolean => {
     const formattedDate = format(selectedDate, "yyyy-MM-dd");
-    return bookedSlots[formattedDate]?.has(timeOption);
+    const time24h = convertTo24HourFormat(timeOption);
+    return bookedSlots[formattedDate]?.has(time24h);
   };
 
   const handleTimeChange = (time12h: string) => {

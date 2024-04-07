@@ -25,20 +25,18 @@ export async function POST(req: Request) {
   const session = event.data.object as Stripe.Checkout.Session;
   const userId = session?.metadata?.userId;
   const serviceId = session?.metadata?.serviceId;
-  const dateTime = session?.metadata?.dateTime;
+  const date = session?.metadata?.date;
   const price = session?.metadata?.price;
   const user = await clerkClient.users.getUser(userId!);
 
   if (event.type === "checkout.session.completed") {
-    if (!userId || !serviceId || !dateTime) {
+    if (!userId || !serviceId || !date) {
       return new NextResponse(`Webhook Error: Missing metadata`, {
         status: 400,
       });
     }
 
     try {
-      const dateTimeObject = new Date(dateTime);
-
       await db.purchase.create({
         data: {
           serviceId: serviceId,
@@ -51,7 +49,7 @@ export async function POST(req: Request) {
         data: {
           userId: userId,
           serviceId: serviceId,
-          dateTime: dateTimeObject,
+          dateTime: date,
           name: `${user.firstName} ${user.lastName}`,
         },
       });
