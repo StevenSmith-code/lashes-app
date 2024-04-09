@@ -1,34 +1,27 @@
 "use client";
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from "react";
 
-import { format } from 'date-fns-tz';
-import { motion } from 'framer-motion';
-import {
-  Controller,
-  SubmitHandler,
-  useForm,
-} from 'react-hook-form';
-import { z } from 'zod';
+import { format } from "date-fns-tz";
+import { motion } from "framer-motion";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { getAppointments } from '@/actions/get-appointments';
-import { ServiceList } from '@/actions/get-services';
+import { getAppointments } from "@/actions/get-appointments";
+import { ServiceList } from "@/actions/get-services";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
-import { FormDataSchema } from '@/lib/formSchema';
-import { zodResolver } from '@hookform/resolvers/zod';
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { FormDataSchema } from "@/lib/formSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import BookingCalendar from './booking-calendar';
-import BookingConfirmation from './booking-confirmation';
-import BookingTimePicker from './booking-time-picker';
-import { PaymentButton } from './payment-button';
+import BookingCalendar from "./booking-calendar";
+import BookingConfirmation from "./booking-confirmation";
+import BookingTimePicker from "./booking-time-picker";
+import { PaymentButton } from "./payment-button";
 
 export type Inputs = z.infer<typeof FormDataSchema>;
 type Service = {

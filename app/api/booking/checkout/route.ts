@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
-import { db } from '@/lib/db';
-import { stripe } from '@/lib/stripe';
-import { currentUser } from '@clerk/nextjs';
+import { db } from "@/lib/db";
+import { stripe } from "@/lib/stripe";
+import { currentUser } from "@clerk/nextjs";
 
 export async function POST(req: Request) {
   try {
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       ],
       mode: "payment",
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking?success=1`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking?canceled=1`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking?canceled=2`,
       metadata: {
         userId: user.id,
         serviceId: serviceDetails.id,

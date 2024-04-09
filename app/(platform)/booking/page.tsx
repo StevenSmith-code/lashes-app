@@ -1,17 +1,15 @@
-import React from 'react';
+"use client";
+import React from "react";
 
-import { Poppins } from 'next/font/google';
-import localFont from 'next/font/local';
+import { Poppins } from "next/font/google";
+import localFont from "next/font/local";
+import { useSearchParams } from "next/navigation";
 
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
-import BookingForm from './_components/booking-form';
+import BookingForm from "./_components/booking-form";
+import ConfirmationModal from "./_components/confirmation-modal";
 
 const headingFont = localFont({
   src: "../../../public/fonts/font.woff2",
@@ -22,6 +20,16 @@ const textFont = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 const BookingPage = () => {
+  const bookingParams = useSearchParams();
+  const success = bookingParams.get("success");
+  const denied = bookingParams.get("canceled");
+
+  if (success) {
+    return <ConfirmationModal status={success} />;
+  }
+  if (denied) {
+    return <ConfirmationModal status={denied} />;
+  }
   return (
     <div className="flex items-center justify-center flex-col h-[calc(100vh-56px)]">
       <div
