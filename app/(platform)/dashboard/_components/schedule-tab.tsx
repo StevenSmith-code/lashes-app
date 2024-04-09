@@ -38,6 +38,7 @@ interface Appointments {
   createdAt: Date;
   updatedAt: Date;
   name: string;
+  price: number;
   serviceName: string;
   userPhoneNumber: string;
 }
@@ -62,6 +63,10 @@ const ScheduleTab = () => {
 
     fetchAppointments();
   }, []);
+
+  useEffect(() => {
+    console.log(appointments);
+  }, [appointments]);
 
   return (
     <div className="w-full flex justify-center gap-4 ">
@@ -104,7 +109,10 @@ const ScheduleTab = () => {
                       {format(appointment.dateTime, "M/d/yyyy")}
                     </TableCell>
                     <TableCell>{appointment.name}</TableCell>
-                    <TableCell>{appointment.serviceName}</TableCell>
+                    <TableCell>
+                      {appointment.serviceName}{" "}
+                      {appointment.price > 65 ? "Full set" : "Refill"}
+                    </TableCell>
                     <TableCell>{appointment.userPhoneNumber}</TableCell>
                     <TableCell className="text-right">
                       {format(

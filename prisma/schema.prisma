@@ -31,6 +31,7 @@ model Appointment {
   updatedAt  DateTime @updatedAt
 
   service    Service  @relation(fields: [serviceId], references: [id])
+  price      Int
 }
 
 

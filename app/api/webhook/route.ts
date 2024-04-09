@@ -50,6 +50,7 @@ export async function POST(req: Request) {
           userId: userId,
           serviceId: serviceId,
           dateTime: date,
+          price: parseInt(price!),
           name: `${user.firstName} ${user.lastName}`,
         },
       });

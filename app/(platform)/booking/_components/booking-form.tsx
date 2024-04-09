@@ -49,6 +49,7 @@ type Appointment = {
   createdAt: Date;
   updatedAt: Date;
   service: Service;
+  price: number;
 };
 
 const steps = [
