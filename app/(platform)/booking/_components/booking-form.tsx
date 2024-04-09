@@ -63,6 +63,7 @@ const BookingForm = () => {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setformData] = useState({
+    price: 0,
     service: "",
     firstName: "",
     lastName: "",
@@ -201,7 +202,7 @@ const BookingForm = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
+            <h2 className="text-xl font-semibold leading-7 text-gray-900">
               Service Options
             </h2>
             <p className="mt-1 text-sm leading-6 text-gray-600">
@@ -221,25 +222,41 @@ const BookingForm = () => {
                           {service.name}
                         </AccordionTrigger>
                         <AccordionContent className="flex flex-col items-center justify-center space-y-5">
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-base text-muted-foreground text-left">
                             {service.description}
                           </p>
                           <p className="text-sm">
                             ${service.price} for a full set and $
                             {service.refillPrice} for a refill.
                           </p>
-                          <Button
-                            variant={"outline"}
-                            onClick={() => {
-                              setformData({
-                                ...formData,
-                                service: service.name,
-                              });
-                              next();
-                            }}
-                          >
-                            Select
-                          </Button>
+                          <div className="w-1/3 flex justify-between">
+                            <Button
+                              variant={"default"}
+                              onClick={() => {
+                                setformData({
+                                  ...formData,
+                                  service: service.name,
+                                  price: service.price,
+                                });
+                                next();
+                              }}
+                            >
+                              Full set
+                            </Button>
+                            <Button
+                              variant={"default"}
+                              onClick={() => {
+                                setformData({
+                                  ...formData,
+                                  service: service.name,
+                                  price: service.refillPrice,
+                                });
+                                next();
+                              }}
+                            >
+                              Refill
+                            </Button>
+                          </div>
                         </AccordionContent>
                       </AccordionItem>
                     ))}
@@ -304,8 +321,14 @@ const BookingForm = () => {
 
         {currentStep === 2 && (
           <>
-            <BookingConfirmation service={formData.service} />
-            <PaymentButton service={formData.service} />
+            <BookingConfirmation
+              service={formData.service}
+              servicePrice={formData.price}
+            />
+            <PaymentButton
+              service={formData.service}
+              servicePrice={formData.price}
+            />
           </>
         )}
       </form>

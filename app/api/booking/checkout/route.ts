@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     }
 
     // Parse the request body to get booking details
-    const { service, date } = await req.json();
+    const { service, date, servicePrice } = await req.json();
 
     // Check if the service exists
     const serviceDetails = await db.service.findUnique({
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
               name: serviceDetails.name,
               description: serviceDetails.description,
             },
-            unit_amount: Math.round(serviceDetails.price! * 100),
+            unit_amount: Math.round(servicePrice! * 100),
           },
         },
       ],
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
         userId: user.id,
         serviceId: serviceDetails.id,
         date: date,
-        price: serviceDetails.price,
+        price: servicePrice,
       },
     });
 

@@ -10,9 +10,13 @@ import useBookingStore from '@/hooks/useBookingStore';
 
 interface PaymentButtonProps {
   service: string;
+  servicePrice: number;
 }
 
-export const PaymentButton = ({ service }: PaymentButtonProps) => {
+export const PaymentButton = ({
+  service,
+  servicePrice,
+}: PaymentButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { date } = useBookingStore();
 
@@ -23,6 +27,7 @@ export const PaymentButton = ({ service }: PaymentButtonProps) => {
       const response = await axios.post(`/api/booking/checkout`, {
         service,
         date,
+        servicePrice,
       });
 
       window.location.assign(response.data.url);
