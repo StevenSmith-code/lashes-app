@@ -28,7 +28,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import BookingCalendar from '../../booking/_components/booking-calendar';
+import ScheduleCalendar from './schedule-calendar';
 
 interface Appointments {
   id: string;
@@ -75,7 +75,7 @@ const ScheduleTab = () => {
           <CardTitle className="mb-5">Schedule</CardTitle>
         </CardHeader>
         <CardContent>
-          <BookingCalendar
+          <ScheduleCalendar
             appointments={appointments}
             onDateChange={setSelectedDate}
           />

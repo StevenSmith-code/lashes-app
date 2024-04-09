@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from "react";
 
 import {
   format,
@@ -12,20 +9,20 @@ import {
   isSameDay,
   isSunday,
   startOfDay,
-} from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
+} from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 
-import { getCalendarDaysOff } from '@/actions/get-calendar-days-off';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import { getCalendarDaysOff } from "@/actions/get-calendar-days-off";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import useBookingStore from '@/hooks/useBookingStore';
-import { cn } from '@/lib/utils';
-import { Appointment } from '@prisma/client';
+} from "@/components/ui/popover";
+import useBookingStore from "@/hooks/useBookingStore";
+import { cn } from "@/lib/utils";
+import { Appointment } from "@prisma/client";
 
 interface BookingCalendarProps {
   onDateChange?: (date: Date) => void;
@@ -42,7 +39,7 @@ const getAppointmentModifiers = (appointments: Appointment[]) => {
   return modifiers;
 };
 
-const BookingCalendar = ({
+const ScheduleCalendar = ({
   onDateChange,
   withPopover,
   appointments,
@@ -66,7 +63,7 @@ const BookingCalendar = ({
   const modifiers = getAppointmentModifiers(appointments || []);
   const modifiersStyles = {
     hasAppointment: {
-      backgroundColor: "black",
+      backgroundColor: "#2D55FF",
       color: "white",
     },
   };
@@ -100,7 +97,7 @@ const BookingCalendar = ({
     <Calendar
       mode="single"
       modifiers={modifiers}
-      // modifiersStyles={modifiersStyles}
+      modifiersStyles={modifiersStyles}
       selected={date ?? undefined}
       onSelect={handleDateChange}
       initialFocus
@@ -136,4 +133,4 @@ const BookingCalendar = ({
   );
 };
 
-export default BookingCalendar;
+export default ScheduleCalendar;
