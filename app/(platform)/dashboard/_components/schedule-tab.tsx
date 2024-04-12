@@ -53,6 +53,10 @@ const ScheduleTab = () => {
       try {
         setIsLoading(true);
         let { modifiedAppointments } = await getAppointments();
+        modifiedAppointments.sort(
+          (a, b) =>
+            new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
+        );
         setAppointments(modifiedAppointments);
       } catch (error) {
         console.error("Failed to fetch appointments:", error);

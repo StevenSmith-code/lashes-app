@@ -1,28 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   format,
-  isBefore,
   isMonday,
   isSameDay,
   isSunday,
   startOfDay,
-} from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+} from 'date-fns';
+import { Calendar as CalendarIcon } from 'lucide-react';
 
-import { getCalendarDaysOff } from "@/actions/get-calendar-days-off";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { getCalendarDaysOff } from '@/actions/get-calendar-days-off';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import useBookingStore from "@/hooks/useBookingStore";
-import { cn } from "@/lib/utils";
-import { Appointment } from "@prisma/client";
+} from '@/components/ui/popover';
+import useBookingStore from '@/hooks/useBookingStore';
+import { cn } from '@/lib/utils';
+import { Appointment } from '@prisma/client';
 
 interface BookingCalendarProps {
   onDateChange?: (date: Date) => void;
@@ -84,13 +86,7 @@ const ScheduleCalendar = ({
   const disabledDays = (day: Date) => {
     const today = startOfDay(new Date());
 
-    return (
-      isSunday(day) ||
-      isMonday(day) ||
-      isBefore(day, today) ||
-      isSameDay(day, today) ||
-      isDayOff(day)
-    );
+    return isSunday(day) || isMonday(day) || isDayOff(day);
   };
 
   const calendarContent = (
