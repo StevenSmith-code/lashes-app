@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/toaster';
 
 export default function PlatformLayout({
   children,

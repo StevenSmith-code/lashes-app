@@ -76,7 +76,7 @@ const ScheduleTab = () => {
     <div className="w-full flex justify-center gap-4 ">
       <Card className="flex flex-col justify-center items-center max-w-fit">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="mb-5">Schedule</CardTitle>
+          <CardTitle className="mb-5">Calendar</CardTitle>
         </CardHeader>
         <CardContent>
           <ScheduleCalendar

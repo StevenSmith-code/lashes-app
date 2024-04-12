@@ -58,7 +58,11 @@ model StripeCustomer{
 
 model DayOff {
   id          String   @id @default(uuid())
-  date        DateTime @unique 
+  startDate   DateTime 
+  endDate     DateTime
+  
+  startTime   String
+  endTime     String
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

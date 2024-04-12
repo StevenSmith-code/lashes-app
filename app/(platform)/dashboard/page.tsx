@@ -26,6 +26,7 @@ import { CalendarDateRangePicker } from './_components/date-range-picker';
 import { Overview } from './_components/overview';
 import { RecentSales } from './_components/recent-sales';
 import ScheduleTab from './_components/schedule-tab';
+import ScheduleTimeOff from './_components/schedule-time-off';
 
 const DashboardPage = async () => {
   const { userId } = auth();
@@ -56,7 +57,8 @@ const DashboardPage = async () => {
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="schedule">Schedule</TabsTrigger>
+              <TabsTrigger value="schedule">Calender</TabsTrigger>
+              <TabsTrigger value="time-off">Schedule Time Off</TabsTrigger>
             </TabsList>
             <TabsContent value="overview" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -145,6 +147,9 @@ const DashboardPage = async () => {
             </TabsContent>
             <TabsContent value="schedule" className="space-y-4">
               <ScheduleTab />
+            </TabsContent>
+            <TabsContent value="time-off">
+              <ScheduleTimeOff />
             </TabsContent>
           </Tabs>
         </div>
