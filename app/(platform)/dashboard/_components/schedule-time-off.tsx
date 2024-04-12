@@ -1,15 +1,12 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 
-import {
-  addDays,
-  format,
-} from 'date-fns';
+import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
-import { DateRange } from 'react-day-picker';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { postDayOff } from '@/actions/post-day-off';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -37,12 +34,6 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 const ScheduleTimeOff = () => {
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 20),
-  });
   const DateRangeSchema = z.object({
     from: z.date({ required_error: "A date must be selected" }),
     to: z.date(),
@@ -67,6 +58,7 @@ const ScheduleTimeOff = () => {
         </pre>
       ),
     });
+    postDayOff(data);
   }
 
   return (
@@ -118,7 +110,7 @@ const ScheduleTimeOff = () => {
                       <Calendar
                         initialFocus
                         mode="range"
-                        defaultMonth={date?.from}
+                        defaultMonth={field.value?.from}
                         selected={field.value}
                         onSelect={field.onChange}
                         numberOfMonths={2}

@@ -11,6 +11,7 @@ import {
   isMonday,
   isSameDay,
   isSunday,
+  isWithinInterval,
   startOfDay,
 } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
@@ -51,12 +52,15 @@ const BookingCalendar = ({
     date: state.date,
     setDate: state.setDate,
   }));
-  const [daysOff, setDaysOff] = useState<Date[]>([]);
+  const [daysOff, setDaysOff] = useState<{ start: Date; end: Date }[]>([]);
 
   useEffect(() => {
     const fetchDaysOff = async () => {
       const getDaysOff = await getCalendarDaysOff();
-      const daysOff = getDaysOff.map((dayOff) => new Date(dayOff.date));
+      const daysOff = getDaysOff.map((dayOff) => ({
+        start: dayOff.startDate,
+        end: dayOff.endDate,
+      }));
       setDaysOff(daysOff);
     };
 
@@ -64,15 +68,14 @@ const BookingCalendar = ({
   }, []);
 
   const modifiers = getAppointmentModifiers(appointments || []);
-  const modifiersStyles = {
-    hasAppointment: {
-      backgroundColor: "black",
-      color: "white",
-    },
-  };
 
-  const isDayOff = (day: Date): boolean => {
-    return daysOff.some((dayOff) => isSameDay(day, dayOff));
+  const isWithinDayOffRange = (
+    day: Date,
+    ranges: { start: Date; end: Date }[]
+  ) => {
+    return ranges.some((range) =>
+      isWithinInterval(day, { start: range.start, end: range.end })
+    );
   };
 
   const handleDateChange = (newDate: Date | undefined) => {
@@ -92,7 +95,7 @@ const BookingCalendar = ({
       isMonday(day) ||
       isBefore(day, today) ||
       isSameDay(day, today) ||
-      isDayOff(day)
+      isWithinDayOffRange(day, daysOff)
     );
   };
 
@@ -100,7 +103,6 @@ const BookingCalendar = ({
     <Calendar
       mode="single"
       modifiers={modifiers}
-      // modifiersStyles={modifiersStyles}
       selected={date ?? undefined}
       onSelect={handleDateChange}
       initialFocus
