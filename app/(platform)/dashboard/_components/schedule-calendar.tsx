@@ -6,10 +6,11 @@ import {
 } from 'react';
 
 import {
+  endOfDay,
   format,
   isMonday,
-  isSameDay,
   isSunday,
+  isWithinInterval,
   startOfDay,
 } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
@@ -31,6 +32,10 @@ interface BookingCalendarProps {
   withPopover?: boolean;
   appointments?: Appointment[];
 }
+type DayOff = {
+  start: Date;
+  end: Date;
+};
 
 const getAppointmentModifiers = (appointments: Appointment[]) => {
   const modifiers = {
@@ -50,12 +55,15 @@ const ScheduleCalendar = ({
     date: state.date,
     setDate: state.setDate,
   }));
-  const [daysOff, setDaysOff] = useState<Date[]>([]);
+  const [daysOff, setDaysOff] = useState<DayOff[]>([]);
 
   useEffect(() => {
     const fetchDaysOff = async () => {
       const getDaysOff = await getCalendarDaysOff();
-      const daysOff = getDaysOff.map((dayOff) => new Date(dayOff.date));
+      const daysOff = getDaysOff.map((dayOff) => ({
+        start: new Date(dayOff.startDate),
+        end: new Date(dayOff.endDate),
+      }));
       setDaysOff(daysOff);
     };
 
@@ -71,7 +79,13 @@ const ScheduleCalendar = ({
   };
 
   const isDayOff = (day: Date): boolean => {
-    return daysOff.some((dayOff) => isSameDay(day, dayOff));
+    // Check if 'day' is within any of the ranges in 'daysOff'
+    return daysOff.some((dayOff) =>
+      isWithinInterval(day, {
+        start: startOfDay(dayOff.start), // ensures the comparison includes the start of the start day
+        end: endOfDay(dayOff.end), // ensures the comparison includes the end of the end day
+      })
+    );
   };
 
   const handleDateChange = (newDate: Date | undefined) => {
