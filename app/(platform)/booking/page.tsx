@@ -1,15 +1,20 @@
 "use client";
-import React from "react";
+import React from 'react';
 
-import { Poppins } from "next/font/google";
-import localFont from "next/font/local";
-import { useSearchParams } from "next/navigation";
+import { Poppins } from 'next/font/google';
+import localFont from 'next/font/local';
+import { useSearchParams } from 'next/navigation';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
-import BookingForm from "./_components/booking-form";
-import ConfirmationModal from "./_components/confirmation-modal";
+import BookingForm from './_components/booking-form';
+import ConfirmationModal from './_components/confirmation-modal';
 
 const headingFont = localFont({
   src: "../../../public/fonts/font.woff2",
@@ -50,7 +55,7 @@ const BookingPage = () => {
         <TabsContent value="lashes">
           <div
             className={cn(
-              " text-sm md:text-lg text-neutral-400 mt-4 mb-8 max-w-xs md:max-w-2xl text-left w-fit break-normal",
+              " text-sm md:text-lg text-neutral-400 mt-4 mb-8 max-w-xs md:max-w-2xl text-left w-fit break-normal m-auto",
               textFont.className
             )}
           >

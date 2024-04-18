@@ -1,27 +1,34 @@
 "use client";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from 'react';
 
-import { format } from "date-fns-tz";
-import { motion } from "framer-motion";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
+import { format } from 'date-fns-tz';
+import { motion } from 'framer-motion';
+import {
+  Controller,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
+import { z } from 'zod';
 
-import { getAppointments } from "@/actions/get-appointments";
-import { ServiceList } from "@/actions/get-services";
+import { getAppointments } from '@/actions/get-appointments';
+import { ServiceList } from '@/actions/get-services';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { FormDataSchema } from "@/lib/formSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { FormDataSchema } from '@/lib/formSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import BookingCalendar from "./booking-calendar";
-import BookingConfirmation from "./booking-confirmation";
-import BookingTimePicker from "./booking-time-picker";
-import { PaymentButton } from "./payment-button";
+import BookingCalendar from './booking-calendar';
+import BookingConfirmation from './booking-confirmation';
+import BookingTimePicker from './booking-time-picker';
+import { PaymentButton } from './payment-button';
 
 export type Inputs = z.infer<typeof FormDataSchema>;
 type Service = {
@@ -149,12 +156,12 @@ const BookingForm = () => {
   };
 
   return (
-    <section className="flex flex-col justify-between mt-10 ">
+    <section className="flex flex-col justify-between mt-10  ">
       {/* steps */}
       <nav aria-label="Progress">
         <ol
           role="list"
-          className="space-y-4 md:flex md:space-x-8 md:space-y-0 w-full"
+          className="space-y-4 md:flex md:space-x-8 md:space-y-0 w-full m-auto"
         >
           {steps.map((step, index) => (
             <li key={step.name} className="md:flex-1">
@@ -189,7 +196,10 @@ const BookingForm = () => {
       </nav>
 
       {/* Form */}
-      <form className="mt-12 py-12" onSubmit={handleSubmit(processForm)}>
+      <form
+        className="mt-12 py-12 md:max-w-md lg:min-w-full m-auto"
+        onSubmit={handleSubmit(processForm)}
+      >
         {currentStep === 0 && (
           <motion.div
             initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
@@ -328,8 +338,8 @@ const BookingForm = () => {
       </form>
 
       {/* Navigation */}
-      <div className="mt-8 pt-5">
-        <div className="flex justify-between">
+      <div className="mt-8 pt-5 max-w-md m-auto">
+        <div className="flex justify-between space-x-10">
           <Button
             type="button"
             onClick={prev}
