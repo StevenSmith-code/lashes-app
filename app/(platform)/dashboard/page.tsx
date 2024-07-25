@@ -20,7 +20,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs';
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 
 import { CalendarDateRangePicker } from './_components/date-range-picker';
 import { Overview } from './_components/overview';

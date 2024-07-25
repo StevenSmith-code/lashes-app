@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 
 import { db } from '@/lib/db';
 import { stripe } from '@/lib/stripe';
-import { clerkClient } from '@clerk/nextjs';
+import { clerkClient } from '@clerk/nextjs/server';
 
 export async function POST(req: Request) {
   const body = await req.text();
